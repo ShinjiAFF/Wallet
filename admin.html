@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Master Control - Binance Finance</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        body { font-family: 'Inter', system-ui, sans-serif; }
+        .logo-font { font-family: 'Space Grotesk', sans-serif; }
+        .binance-yellow { color: #f0b90b; }
+        .glass { background: rgba(255,255,255,0.05); backdrop-filter: blur(12px); }
+    </style>
+</head>
+<body class="bg-[#0a0a0a] text-white min-h-screen">
+    <div class="max-w-7xl mx-auto p-8">
+        <div class="flex justify-between items-center mb-10">
+            <div>
+                <h1 class="text-4xl font-bold logo-font binance-yellow">ADMIN MASTER CONTROL</h1>
+                <p class="text-gray-400">Only you have access to this panel</p>
+            </div>
+            <button onclick="logout()" class="px-6 py-3 bg-red-600 hover:bg-red-700 rounded-2xl flex items-center gap-2">
+                <i class="fas fa-sign-out-alt"></i> Logout Admin
+            </button>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- Create New User -->
+            <div class="glass border border-gray-700 rounded-3xl p-8">
+                <h2 class="text-xl font-semibold mb-6 flex items-center gap-2">
+                    <i class="fas fa-user-plus"></i> Create Staff Account
+                </h2>
+                <input id="new-email" placeholder="Staff Email" class="w-full bg-gray-900 border border-gray-700 rounded-2xl px-5 py-4 mb-4">
+                <input id="new-phone" placeholder="Phone Number" class="w-full bg-gray-900 border border-gray-700 rounded-2xl px-5 py-4 mb-6">
+                <button onclick="createUser()" class="w-full py-4 bg-emerald-600 hover:bg-emerald-500 rounded-2xl font-semibold">Create Account</button>
+            </div>
+
+            <!-- Users List -->
+            <div class="lg:col-span-2 glass border border-gray-700 rounded-3xl p-8">
+                <h2 class="text-xl font-semibold mb-6">All Staff Accounts</h2>
+                <div id="users-list" class="space-y-4"></div>
+            </div>
+        </div>
+
+        <div class="mt-12 glass border border-gray-700 rounded-3xl p-8">
+            <h2 class="text-xl font-semibold mb-6">All Transactions</h2>
+            <div id="all-transactions" class="space-y-3"></div>
+        </div>
+    </div>
+
+    <script>
+        let users = JSON.parse(localStorage.getItem('financeUsers')) || [];
+        let transactions = JSON.parse(localStorage.getItem('financeTx')) || [];
+
+        function createUser() {
+            const email = document.getElementById('new-email').value.trim();
+            if (!email) return alert("Please enter email");
+            
+            const newUser = {
+                id: Date.now(),
+                email: email,
+                phone: document.getElementById('new-phone').value || "N/A",
+                balance: 0,
+                created: new Date().toISOString().split('T')[0]
+            };
+            
+            users.push(newUser);
+            localStorage.setItem('financeUsers', JSON.stringify(users));
+            renderUsers();
+            alert(`✅ Account created for ${email}`);
+        }
+
+        function renderUsers() {
+            const container = document.getElementById('users-list');
+            container.innerHTML = users.map(user => `
+                <div class="flex justify-between items-center bg-gray-900 rounded-2xl p-6 border border-gray-700">
+                    <div>
+                        <div class="font-medium">${user.email}</div>
+                        <div class="text-sm text-gray-400">${user.phone} • Balance: $${user.balance}</div>
+                    </div>
+                    <div class="flex gap-3">
+                        <button onclick="adjustBalance(${user.id})" class="px-5 py-2 bg-blue-600 hover:bg-blue-500 rounded-xl text-sm">Adjust Balance</button>
+                        <button onclick="deleteUser(${user.id})" class="px-5 py-2 bg-red-600 hover:bg-red-500 rounded-xl text-sm">Delete</button>
+                    </div>
+                </div>
+            `).join('') || '<p class="text-gray-500 text-center py-8">No users yet. Create one above.</p>';
+        }
+
+        function adjustBalance(id) {
+            const amount = prompt("Enter new balance for this user:");
+            if (amount !== null) {
+                const user = users.find(u => u.id === id);
+                if (user) user.balance = parseFloat(amount) || 0;
+                localStorage.setItem('financeUsers', JSON.stringify(users));
+                renderUsers();
+            }
+        }
+
+        function deleteUser(id) {
+            if (confirm("Delete this user permanently?")) {
+                users = users.filter(u => u.id !== id);
+                localStorage.setItem('financeUsers', JSON.stringify(users));
+                renderUsers();
+            }
+        }
+
+        function logout() {
+            if (confirm("Logout from Admin Panel?")) window.location.href = 'index.html';
+        }
+
+        // Initialize
+        renderUsers();
+    </script>
+</body>
+</html>
