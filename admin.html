@@ -3,27 +3,49 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin</title>
+    <title>ADMIN ONLY - B Finance</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-black text-white p-8">
-    <h1 class="text-4xl font-bold text-yellow-400 mb-8">ADMIN PANEL</h1>
-    
-    <div class="max-w-md">
-        <input id="email" placeholder="Staff Email" class="w-full p-5 bg-gray-900 rounded-2xl mb-4 text-lg">
-        <button onclick="create()" class="w-full bg-green-600 p-5 rounded-2xl text-xl font-bold">Create Staff Account</button>
+<body class="bg-black text-white p-6">
+    <div class="max-w-xl mx-auto">
+        <div class="text-red-500 text-sm mb-2">🔴 ADMIN ONLY PANEL</div>
+        <h1 class="text-4xl font-bold mb-8">Master Control</h1>
+        
+        <div class="bg-gray-900 p-8 rounded-3xl mb-8">
+            <h2 class="text-2xl mb-6">Create Staff Account</h2>
+            <input id="email" placeholder="staff@company.com" class="w-full p-5 rounded-2xl bg-gray-800 mb-4 text-lg">
+            <button onclick="createAccount()" class="w-full bg-green-600 p-5 rounded-2xl text-xl font-bold">Create Account</button>
+        </div>
+
+        <div class="bg-gray-900 p-8 rounded-3xl">
+            <h2 class="text-2xl mb-6">All Staff</h2>
+            <div id="list"></div>
+        </div>
     </div>
 
     <script>
-        function create() {
+        function createAccount() {
             const email = document.getElementById('email').value;
-            if (email) {
-                let users = JSON.parse(localStorage.getItem('users') || '[]');
-                users.push({email: email, balance: 1000});
-                localStorage.setItem('users', JSON.stringify(users));
-                alert('✅ Created: ' + email + '\n\nNow try logging in on the main page.');
-            }
+            if (!email) return alert("Enter email");
+            
+            let users = JSON.parse(localStorage.getItem('bfinance_users') || '[]');
+            users.push({email: email, balance: 500});
+            localStorage.setItem('bfinance_users', JSON.stringify(users));
+            
+            alert("✅ Account Created for: " + email);
+            showUsers();
         }
+
+        function showUsers() {
+            const users = JSON.parse(localStorage.getItem('bfinance_users') || '[]');
+            document.getElementById('list').innerHTML = users.map(u => `
+                <div class="bg-gray-800 p-4 rounded-2xl mb-3">
+                    ${u.email} - Balance: $${u.balance}
+                </div>
+            `).join('');
+        }
+
+        showUsers();
     </script>
 </body>
 </html>
