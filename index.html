@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Binance Finance</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600&display=swap');
+        body { font-family: 'Inter', system-ui, sans-serif; }
+        .logo-font { font-family: 'Space Grotesk', sans-serif; }
+        .binance-yellow { color: #f0b90b; }
+        .glass { background: rgba(255,255,255,0.05); backdrop-filter: blur(12px); }
+    </style>
+</head>
+<body class="bg-[#0a0a0a] text-white min-h-screen">
+    <nav class="bg-black border-b border-gray-800 fixed w-full z-50">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+            <div class="flex items-center gap-2 cursor-pointer" onclick="window.location.reload()">
+                <span class="text-3xl font-bold logo-font binance-yellow">B</span>
+                <span class="text-2xl font-semibold">FINANCE</span>
+            </div>
+            <div id="nav-user" class="hidden items-center gap-4">
+                <div class="flex items-center gap-2 bg-gray-900 px-4 py-2 rounded-full text-sm">
+                    <i class="fas fa-wallet"></i>
+                    <span id="nav-balance" class="font-mono">$0.00</span>
+                </div>
+                <button onclick="logout()" class="px-5 py-2 bg-gray-900 hover:bg-gray-800 rounded-xl">Logout</button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="pt-20 max-w-7xl mx-auto px-6">
+        <!-- Login Screen -->
+        <div id="login-screen">
+            <div class="max-w-md mx-auto mt-20 glass border border-gray-700 rounded-3xl p-10">
+                <h1 class="text-4xl font-semibold text-center mb-8">Welcome Back</h1>
+                <input id="login-email" type="text" placeholder="Email" class="w-full bg-gray-900 border border-gray-700 rounded-2xl px-5 py-4 mb-4">
+                <input id="login-pass" type="password" placeholder="Password" class="w-full bg-gray-900 border border-gray-700 rounded-2xl px-5 py-4 mb-6">
+                <button onclick="login()" class="w-full py-4 bg-[#f0b90b] text-black font-semibold rounded-2xl">Sign In</button>
+            </div>
+        </div>
+
+        <!-- Dashboard -->
+        <div id="dashboard-screen" class="hidden">
+            <div class="text-center">
+                <h2 class="text-3xl">Welcome, <span id="user-email"></span></h2>
+                <div id="balance-amount" class="text-6xl font-bold binance-yellow mt-8">$0.00</div>
+            </div>
+            <!-- Buttons for Deposit, Withdraw, Transfer -->
+        </div>
+    </div>
+
+    <script>
+        // Simple demo logic
+        function login() {
+            const email = document.getElementById('login-email').value || "staff@company.com";
+            document.getElementById('login-screen').classList.add('hidden');
+            document.getElementById('dashboard-screen').classList.remove('hidden');
+            document.getElementById('nav-user').classList.remove('hidden');
+            document.getElementById('user-email').textContent = email;
+            document.getElementById('balance-amount').textContent = '$1,245.00';
+        }
+        function logout() { location.reload(); }
+    </script>
+</body>
+</html>
