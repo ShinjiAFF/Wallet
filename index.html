@@ -5,56 +5,46 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>B Finance</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
-        body { font-family: 'Inter', system-ui, sans-serif; }
-        .logo-font { font-family: 'Space Grotesk', sans-serif; }
-        .binance-yellow { color: #f0b90b; }
-        .glass { background: rgba(255,255,255,0.05); backdrop-filter: blur(12px); }
+        body { background: #0a0a0a; color: white; font-family: system-ui; }
+        .glass { background: rgba(255,255,255,0.08); backdrop-filter: blur(12px); }
     </style>
 </head>
-<body class="bg-[#0a0a0a] text-white">
-    <div class="min-h-screen flex items-center justify-center">
-        <div id="login-screen" class="glass border border-gray-700 rounded-3xl p-10 w-full max-w-md mx-4">
-            <div class="text-center mb-8">
-                <span class="text-5xl">B</span>
-                <h1 class="text-4xl font-bold logo-font binance-yellow">FINANCE</h1>
-            </div>
-            <h2 class="text-3xl font-semibold text-center mb-8">Welcome Back</h2>
-            
-            <input id="email" type="text" placeholder="Email" class="w-full bg-gray-900 border border-gray-700 rounded-2xl px-5 py-4 mb-4">
-            <input id="password" type="password" placeholder="Password" class="w-full bg-gray-900 border border-gray-700 rounded-2xl px-5 py-4 mb-6">
-            
-            <button onclick="login()" class="w-full py-4 bg-[#f0b90b] text-black font-bold rounded-2xl text-lg">Sign In</button>
-            
-            <p class="text-center text-xs text-gray-500 mt-8">Only accounts created by Admin can login</p>
+<body class="min-h-screen flex items-center justify-center p-4">
+    <div id="login" class="glass border border-gray-700 rounded-3xl p-10 w-full max-w-md">
+        <div class="text-center mb-10">
+            <span class="text-6xl">B</span>
+            <h1 class="text-5xl font-bold text-yellow-400">FINANCE</h1>
         </div>
+        <h2 class="text-3xl text-center mb-8">Welcome Back</h2>
+        
+        <input id="email" placeholder="Email" class="w-full p-5 bg-gray-900 rounded-2xl mb-4 text-lg">
+        <input id="pass" type="password" placeholder="Password" class="w-full p-5 bg-gray-900 rounded-2xl mb-8 text-lg">
+        
+        <button onclick="login()" class="w-full bg-yellow-400 text-black p-5 rounded-2xl text-xl font-bold">Sign In</button>
+        <p class="text-center text-xs text-gray-500 mt-6">Only Admin-created accounts work</p>
+    </div>
 
-        <div id="dashboard" class="hidden p-8 w-full max-w-2xl mx-4">
-            <h1 class="text-3xl">Welcome, <span id="user-name"></span></h1>
-            <div class="mt-12 text-6xl font-mono binance-yellow" id="balance">$0.00</div>
-            <!-- More UI can be added later -->
-            <button onclick="logout()" class="mt-12 px-8 py-3 bg-red-600 rounded-2xl">Logout</button>
-        </div>
+    <div id="main" class="hidden glass border border-gray-700 rounded-3xl p-10 w-full max-w-md">
+        <h1 class="text-3xl">Welcome</h1>
+        <div id="balance" class="text-6xl text-yellow-400 mt-8 mb-12 font-mono">$0</div>
+        <button onclick="logout()" class="w-full bg-red-600 p-4 rounded-2xl">Logout</button>
     </div>
 
     <script>
-        const validUsers = {
-            "admin@bfinance.com": { password: "admin123", role: "admin", balance: 50000 },
-            // Add more users here that you create in admin
-        };
-
         function login() {
             const email = document.getElementById('email').value.trim();
-            const pass = document.getElementById('password').value;
+            if (!email) return alert("Enter email");
 
-            if (validUsers[email] && validUsers[email].password === pass) {
-                document.getElementById('login-screen').classList.add('hidden');
-                document.getElementById('dashboard').classList.remove('hidden');
-                document.getElementById('user-name').textContent = email;
-                document.getElementById('balance').textContent = '$' + validUsers[email].balance;
+            let users = JSON.parse(localStorage.getItem('bfinance_users') || '[]');
+            const user = users.find(u => u.email.toLowerCase() === email.toLowerCase());
+
+            if (user) {
+                document.getElementById('login').classList.add('hidden');
+                document.getElementById('main').classList.remove('hidden');
+                document.getElementById('balance').innerHTML = `Balance: $${user.balance || 0}`;
             } else {
-                alert("Invalid email or password. Ask Admin to create your account.");
+                alert("Account not found.\n\nGo to admin.html and create this email first.");
             }
         }
 
