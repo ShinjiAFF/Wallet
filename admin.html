@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-black text-white p-8">
+    <h1 class="text-4xl font-bold text-yellow-400 mb-8">ADMIN PANEL</h1>
+    
+    <div class="max-w-md">
+        <input id="email" placeholder="Staff Email" class="w-full p-5 bg-gray-900 rounded-2xl mb-4 text-lg">
+        <button onclick="create()" class="w-full bg-green-600 p-5 rounded-2xl text-xl font-bold">Create Staff Account</button>
+    </div>
+
+    <script>
+        function create() {
+            const email = document.getElementById('email').value;
+            if (email) {
+                let users = JSON.parse(localStorage.getItem('users') || '[]');
+                users.push({email: email, balance: 1000});
+                localStorage.setItem('users', JSON.stringify(users));
+                alert('✅ Created: ' + email + '\n\nNow try logging in on the main page.');
+            }
+        }
+    </script>
+</body>
+</html>
